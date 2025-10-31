@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Features entity represents the technical specifications of a product.
+ */
 @Entity
 @Table(name = "features")
 @Getter

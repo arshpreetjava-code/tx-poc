@@ -8,7 +8,6 @@ import com.testing.ex.repos.UserRepository;
 import com.testing.ex.service.AuthenticationService;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

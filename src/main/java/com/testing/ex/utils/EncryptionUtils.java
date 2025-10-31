@@ -1,13 +1,23 @@
 package com.testing.ex.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
+import com.testing.ex.domain.entity.Product;
+import io.swagger.v3.oas.annotations.Operation;
+import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * Utility class for encrypting and decrypting JSON data using AES encryption.
+ */
 @Component
 public class EncryptionUtils {
 
@@ -63,8 +73,8 @@ public class EncryptionUtils {
    * of the specified type.
    *
    * @param encryptedData the encrypted data as a Base64 encoded string
-   * @param valueType     the class of the object to return
-   * @param <T>           the type of the object to return
+   * @param valueType the class of the object to return
+   * @param <T> the type of the object to return
    * @return the decrypted object
    * @throws Exception if decryption or JSON parsing fails
    */

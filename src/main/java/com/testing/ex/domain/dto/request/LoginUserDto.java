@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object for user login requests.
+ */
 @Getter
 @Setter
 public class LoginUserDto {

@@ -1,12 +1,15 @@
 package com.testing.ex.controller;
 
-import com.testing.ex.domain.dto.response.LoginResponse;
 import com.testing.ex.domain.dto.request.LoginUserDto;
 import com.testing.ex.domain.dto.request.RegisterUserDto;
 import com.testing.ex.domain.dto.request.VerifyUserDto;
+import com.testing.ex.domain.dto.response.LoginResponse;
 import com.testing.ex.domain.entity.User;
+import com.testing.ex.security.TestingUserDetails;
 import com.testing.ex.service.AuthenticationService;
 import com.testing.ex.service.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -15,10 +18,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * REST controller that exposes user-related endpoints such as registration,
@@ -49,7 +51,7 @@ public class UserController {
   @PostMapping(path = "/register")
   public ResponseEntity<?> register(@Valid @RequestBody RegisterUserDto request) {
     User user = authenticationService.signup(request);
-    //TODO: Loin Response Filter will not send password & encrypt the stored verification code.
+    // TODO: Loin Response Filter will not send password & encrypt the stored verification code.
     return ResponseEntity.ok(user);
   }
 
@@ -88,4 +90,29 @@ public class UserController {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
+
+  @PostMapping(path = "/mock", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<LoginResponse> authenticateMock(
+      @RequestParam ("userId") String userId,
+      @Valid @RequestBody LoginUserDto request) {
+
+    User user = User.builder()
+        .id(userId)
+        .username("ajay sodhi")
+        .email(request.getEmail())
+        .password(request.getPassword()) // {noop} means plain text for testing
+        .enabled(true)
+        .build();
+
+    // Wrap it in your custom UserDetails
+    UserDetails authenticatedUser = new TestingUserDetails(user);
+
+    LoginResponse loginResponse = LoginResponse.builder()
+        .token(jwtService.generateToken(authenticatedUser))
+        .expiration(jwtService.getExpirationTime())
+        .build();
+    return ResponseEntity.ok(loginResponse);
+  }
+
+
 }

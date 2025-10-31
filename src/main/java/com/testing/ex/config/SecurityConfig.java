@@ -2,6 +2,7 @@ package com.testing.ex.config;
 
 import com.testing.ex.security.JwtSecurityFilter;
 import com.testing.ex.service.JwtService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import java.util.List;
 
 /**
  * Spring Security configuration for the application. Configures stateless JWT
@@ -46,11 +46,8 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
-            // allow unauthenticated access to auth endpoints
             .requestMatchers("/api/users/**").permitAll()
-            // allow access to OpenAPI/Swagger UI
-            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                "/v3/api-docs.yaml").permitAll()
+            .requestMatchers("/swagger-ui.html").permitAll()
             .anyRequest().authenticated()
         )
         .sessionManagement(session ->

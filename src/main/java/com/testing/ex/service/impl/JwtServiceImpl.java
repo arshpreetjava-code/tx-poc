@@ -7,17 +7,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of JwtService for generating and validating JWT tokens.
+ */
 @Service
 public class JwtServiceImpl implements JwtService {
 
@@ -36,7 +37,11 @@ public class JwtServiceImpl implements JwtService {
   @Override
   public String generateToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
-    claims.put("userId", ((TestingUserDetails) userDetails).getId());
+    TestingUserDetails testingUser = (TestingUserDetails) userDetails;
+    claims.put("userId", testingUser.getId());
+    claims.put("username", testingUser.getUser().getUsername());
+    claims.put("email", testingUser.getUsername());
+    claims.put("enabled", testingUser.isEnabled());
 
     return Jwts.builder()
         .setClaims(claims)
@@ -77,7 +82,7 @@ public class JwtServiceImpl implements JwtService {
   /**
    * Extract all claims from the token.
    */
-  private Claims extractAllClaims(String token) {
+  public Claims extractAllClaims(String token) {
     return Jwts.parserBuilder()
         .setSigningKey(getSigninKey())
         .build()
@@ -89,13 +94,11 @@ public class JwtServiceImpl implements JwtService {
    * Validate the token is valid and belongs to the provided user.
    *
    * @param token       JWT token
-   * @param userDetails user details to validate against
    * @return true if token is valid and not expired
    */
   @Override
-  public boolean validateToken(String token, UserDetails userDetails) {
-    String username = extractUsername(token);
-    return (userDetails.getUsername().equals(username) && !isTokenExpired(token));
+  public boolean validateToken(String token) {
+    return !isTokenExpired(token);
   }
 
   /**

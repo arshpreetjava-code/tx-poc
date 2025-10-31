@@ -1,29 +1,30 @@
 package com.testing.ex.domain.entity;
 
 import com.testing.ex.domain.Category;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Index;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
 
 /**
  * Product entity is generic: can represent phones, tablets, etc.
@@ -78,12 +79,18 @@ public class Product {
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
 
+  /**
+   * Lifecycle callback to set timestamps before persisting.
+   */
   @PrePersist
   public void onCreate() {
     createdAt = LocalDateTime.now();
     updatedAt = LocalDateTime.now();
   }
 
+  /**
+   * Lifecycle callback to update the updatedAt timestamp before updating.
+   */
   @PreUpdate
   public void onUpdate() {
     updatedAt = LocalDateTime.now();

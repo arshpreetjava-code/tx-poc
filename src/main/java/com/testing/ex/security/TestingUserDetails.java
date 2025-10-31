@@ -1,15 +1,16 @@
 package com.testing.ex.security;
 
 import com.testing.ex.domain.entity.User;
+import java.util.Collection;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
+/**
+ * Custom implementation of UserDetails to represent application users in Spring Security.
+ */
 @Getter
 @RequiredArgsConstructor
 public class TestingUserDetails implements UserDetails {

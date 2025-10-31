@@ -1,10 +1,13 @@
 package com.testing.ex.security;
 
+import com.testing.ex.domain.entity.User;
 import com.testing.ex.service.JwtService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +17,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import java.io.IOException;
 
 /**
  * Security filter that validates JWT tokens on incoming requests. If a valid
@@ -41,8 +43,29 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
         return;
       }
 
-      String username = jwtService.extractUsername(token);
+      Claims claims = jwtService.extractAllClaims(token);
+      String email = claims.getSubject();
+      String userId = claims.get("userId", String.class);
+      String username = claims.get("username", String.class);
+      boolean enabled = claims.get("enabled", Boolean.class);
 
+      if(email == null || !jwtService.validateToken(token)) {
+        filterChain.doFilter(request, response);
+        return;
+      }
+
+      User user = User.builder()
+          .id(userId)
+          .username(username)
+          .email(email)
+          .enabled(enabled)
+          .build();
+
+      TestingUserDetails userDetails = new TestingUserDetails(user);
+      request.setAttribute("userId", userId);
+
+      /*
+      String username = jwtService.extractUsername(token);
       UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
       if (!jwtService.validateToken(token, userDetails)) {
@@ -54,7 +77,7 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
         String userId = testingUserDetails.getId();
         request.setAttribute("userId", userId);
       }
-
+      */
       UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
           userDetails, null, userDetails.getAuthorities()
       );

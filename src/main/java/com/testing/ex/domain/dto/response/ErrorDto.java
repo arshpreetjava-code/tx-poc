@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object for representing error responses.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

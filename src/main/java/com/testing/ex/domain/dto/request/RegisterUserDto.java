@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * DTO for user registration request.
+ */
 @Getter
 @Setter
 public class RegisterUserDto {

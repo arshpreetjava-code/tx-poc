@@ -1,10 +1,8 @@
 package com.testing.ex.repos;
 
-import brave.internal.collect.UnsafeArrayMap;
 import com.testing.ex.domain.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Repository for User persistence operations.

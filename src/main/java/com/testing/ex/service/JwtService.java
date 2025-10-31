@@ -1,5 +1,6 @@
 package com.testing.ex.service;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -30,10 +31,18 @@ public interface JwtService {
    * @param userDetails user details to validate against
    * @return true if token is valid and not expired
    */
-  boolean validateToken(String token, UserDetails userDetails);
+  boolean validateToken(String token);
 
   /**
    * Return the configured token expiration time in milliseconds.
    */
   long getExpirationTime();
+
+  /**
+   * Extract all claims from the token.
+   *
+   * @param token JWT token
+   * @return Claims object containing all token claims
+   */
+  Claims extractAllClaims(String token);
 }

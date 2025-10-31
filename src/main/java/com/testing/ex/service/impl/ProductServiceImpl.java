@@ -10,17 +10,19 @@ import com.testing.ex.domain.entity.Features;
 import com.testing.ex.domain.entity.Product;
 import com.testing.ex.repos.ProductRepository;
 import com.testing.ex.service.ProductService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
-import org.slf4j.MDC;
 
-import java.util.UUID;
-
+/**
+ * Implementation of the ProductService interface for managing products.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -207,6 +209,14 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
+  /**
+   * Retrieves a Product entity by its ID and associated user ID.
+   *
+   * @param productId The ID of the product to retrieve.
+   * @param userId    The ID of the user associated with the product.
+   * @return The Product entity if found.
+   * @throws IllegalArgumentException if the product is not found or access is denied.
+   */
   @Override
   public Product getProductEntityByIdAndUserId(Long productId, String userId) {
     return productRepository.findByIdAndTenantId(productId, userId)
